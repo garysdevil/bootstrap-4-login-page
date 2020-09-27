@@ -78,7 +78,10 @@ $(function() {
 	});
 
 	$(".my-login-validation").submit(function() {
+		console.log($(this));
+		
 		var form = $(this); 
+		console.log(form[0].checkValidity());
         if (form[0].checkValidity() === false) {
           event.preventDefault();
           event.stopPropagation();
@@ -87,6 +90,11 @@ $(function() {
 		}
 		form.addClass('was-validated');
 	});
+	$('#password').on('keyup',function(){
+		console.log('123');
+		$(this).removeClass('self-error');
+		$('.invalid-self-errPassword').removeClass('show');
+	})
 });
 
 function getUrlParam(name) {
@@ -114,7 +122,9 @@ function doLogin() {
 				window.location.href = redirectURL
 				
 			} else {
-				alert("账号密码错误");
+				// alert("账号密码错误eeeee");
+				$('#password').addClass('self-error');
+				$('.invalid-self-errPassword').addClass('show');
 			}
 		},
 		error: function(){
