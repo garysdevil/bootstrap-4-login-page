@@ -78,11 +78,47 @@ $(function() {
 	});
 
 	$(".my-login-validation").submit(function() {
-		var form = $(this);
+		var form = $(this); 
         if (form[0].checkValidity() === false) {
           event.preventDefault();
           event.stopPropagation();
-        }
+		}else{
+			doLogin()
+		}
 		form.addClass('was-validated');
 	});
 });
+
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+    if (r != null) return unescape(r[2]);
+    return null; //返回参数值
+}
+function doLogin() {
+	var username = $('#username').val();
+	var password = $('#password').val();
+	console.log("login request");
+	$.ajax({
+		type: 'post',
+		// url: "/v1/sso/login",
+		url: "http://sso.wxblockchain.com/v1/sso/login",
+		contentType: "application/json",
+		data: JSON.stringify({username: username, password: password}),
+		success: function (res) {
+			// console.log(res);
+			if (res.code === 0) {
+				var redirectURL = getUrlParam("redirectURL") || 'http://garys.top'
+				console.log("登录成功，跳转到回调地址: " + redirectURL);
+				// window.location.href = redirectURL + '?token=' + res.data.token
+				window.location.href = redirectURL
+				
+			} else {
+				alert("账号密码错误");
+			}
+		},
+		error: function(){
+			alert("网络错误");
+		}
+	});
+}
